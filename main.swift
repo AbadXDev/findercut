@@ -34,6 +34,21 @@ private let kTipProductIDs = ["dev.abadx.findercut.tip3",
                               "dev.abadx.findercut.tip10"]
 #endif
 
+// MARK: - Localization (follows the system language: Spanish / English)
+
+private enum AppLang { case es, en }
+
+private let appLang: AppLang = {
+    let preferred = Locale.preferredLanguages.first?.lowercased() ?? ""
+    if preferred.hasPrefix("es") { return .es }
+    return .en
+}()
+
+/// Picks the string for the current system language.
+private func L(_ es: String, _ en: String) -> String {
+    appLang == .es ? es : en
+}
+
 private func eventTapCallback(proxy: CGEventTapProxy,
                               type: CGEventType,
                               event: CGEvent,
@@ -95,7 +110,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.image = NSImage(systemSymbolName: "scissors",
                                    accessibilityDescription: "FinderCut")
             button.title = ""
-            button.toolTip = "FinderCut — Cmd+X para cortar archivos en Finder"
+            button.toolTip = L("FinderCut — Cmd+X para cortar archivos en Finder", "FinderCut — Cmd+X to cut files in Finder")
         }
 
         let menu = NSMenu()
@@ -103,48 +118,48 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         header.isEnabled = false
         menu.addItem(header)
 
-        stateItem = NSMenuItem(title: "Estado: …", action: nil, keyEquivalent: "")
+        stateItem = NSMenuItem(title: L("Estado: …", "Status: …"), action: nil, keyEquivalent: "")
         stateItem.isEnabled = false
         menu.addItem(stateItem)
 
-        pendingItem = NSMenuItem(title: "Sin corte pendiente", action: nil, keyEquivalent: "")
+        pendingItem = NSMenuItem(title: L("Sin corte pendiente", "No pending cut"), action: nil, keyEquivalent: "")
         pendingItem.isEnabled = false
         menu.addItem(pendingItem)
 
         menu.addItem(.separator())
 
-        pauseItem = NSMenuItem(title: "Pausar FinderCut", action: #selector(togglePause), keyEquivalent: "")
+        pauseItem = NSMenuItem(title: L("Pausar FinderCut", "Pause FinderCut"), action: #selector(togglePause), keyEquivalent: "")
         pauseItem.target = self
         menu.addItem(pauseItem)
 
-        let accessItem = NSMenuItem(title: "Conceder permiso de Accesibilidad…",
+        let accessItem = NSMenuItem(title: L("Conceder permiso de Accesibilidad…", "Grant Accessibility Permission…"),
                                     action: #selector(openAccessibilitySettings), keyEquivalent: "")
         accessItem.target = self
         menu.addItem(accessItem)
 
-        loginItem = NSMenuItem(title: "Iniciar al abrir sesión", action: #selector(toggleLoginItem), keyEquivalent: "")
+        loginItem = NSMenuItem(title: L("Iniciar al abrir sesión", "Launch at Login"), action: #selector(toggleLoginItem), keyEquivalent: "")
         loginItem.target = self
         menu.addItem(loginItem)
 
         menu.addItem(.separator())
 
-        let supportItem = NSMenuItem(title: "Apoyar FinderCut ❤️…", action: #selector(openSupport), keyEquivalent: "")
+        let supportItem = NSMenuItem(title: L("Apoyar FinderCut ❤️…", "Support FinderCut ❤️…"), action: #selector(openSupport), keyEquivalent: "")
         supportItem.target = self
         menu.addItem(supportItem)
 
 #if APPSTORE
-        let privacyItem = NSMenuItem(title: "Política de privacidad…", action: #selector(openPrivacy), keyEquivalent: "")
+        let privacyItem = NSMenuItem(title: L("Política de privacidad…", "Privacy Policy…"), action: #selector(openPrivacy), keyEquivalent: "")
         privacyItem.target = self
         menu.addItem(privacyItem)
 #endif
 
-        let aboutItem = NSMenuItem(title: "Acerca de FinderCut", action: #selector(showAbout), keyEquivalent: "")
+        let aboutItem = NSMenuItem(title: L("Acerca de FinderCut", "About FinderCut"), action: #selector(showAbout), keyEquivalent: "")
         aboutItem.target = self
         menu.addItem(aboutItem)
 
         menu.addItem(.separator())
 
-        let quitItem = NSMenuItem(title: "Salir de FinderCut", action: #selector(quit), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: L("Salir de FinderCut", "Quit FinderCut"), action: #selector(quit), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
 
@@ -155,16 +170,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if statusItem == nil { return }
         let trusted = AXIsProcessTrusted()
         if !trusted {
-            stateItem.title = "Estado: falta el permiso de Accesibilidad"
+            stateItem.title = L("Estado: falta el permiso de Accesibilidad", "Status: Accessibility permission needed")
         } else if paused {
-            stateItem.title = "Estado: en pausa"
+            stateItem.title = L("Estado: en pausa", "Status: paused")
         } else {
-            stateItem.title = "Estado: activo"
+            stateItem.title = L("Estado: activo", "Status: active")
         }
         pendingItem.title = cutPending
-            ? "Corte pendiente: \(pendingCount > 0 ? "\(pendingCount) elemento(s)" : "elementos") — Cmd+V en otra carpeta para mover"
-            : "Sin corte pendiente"
-        pauseItem.title = paused ? "Reanudar FinderCut" : "Pausar FinderCut"
+            ? L("Corte pendiente: \(pendingCount > 0 ? "\(pendingCount) elemento(s)" : "elementos") — Cmd+V en otra carpeta para mover", "Pending cut: \(pendingCount > 0 ? "\(pendingCount) item(s)" : "items") — Cmd+V in another folder to move")
+            : L("Sin corte pendiente", "No pending cut")
+        pauseItem.title = paused ? L("Reanudar FinderCut", "Resume FinderCut") : L("Pausar FinderCut", "Pause FinderCut")
         loginItem.state = (SMAppService.mainApp.status == .enabled) ? .on : .off
         if let button = statusItem.button {
             button.title = cutPending ? " •" : ""
@@ -223,17 +238,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.alertStyle = .informational
         NSApp.activate(ignoringOtherApps: true)
 #if APPSTORE
-        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev\nRequiere macOS 13 o posterior\n\nWeb: https://abadxdev.github.io/findercut/"
-        alert.addButton(withTitle: "Sitio web")
-        alert.addButton(withTitle: "Cerrar")
+        alert.informativeText = L("Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev\nRequiere macOS 13 o posterior\n\nWeb: https://abadxdev.github.io/findercut/", "Cut and paste files in Finder with Cmd+X and Cmd+V.\n\nBy AbadXDev\nRequires macOS 13 or later\n\nWeb: https://abadxdev.github.io/findercut/")
+        alert.addButton(withTitle: L("Sitio web", "Website"))
+        alert.addButton(withTitle: L("Cerrar", "Close"))
         if alert.runModal() == .alertFirstButtonReturn, let url = URL(string: kWebsiteURL) {
             NSWorkspace.shared.open(url)
         }
 #else
-        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev · Licencia MIT\nRequiere macOS 13 o posterior\n\nCódigo: https://github.com/AbadXDev/findercut\nWeb: https://abadxdev.github.io/findercut/"
-        alert.addButton(withTitle: "Ver en GitHub")
-        alert.addButton(withTitle: "Apoyar ❤️")
-        alert.addButton(withTitle: "Cerrar")
+        alert.informativeText = L("Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev · Licencia MIT\nRequiere macOS 13 o posterior\n\nCódigo: https://github.com/AbadXDev/findercut\nWeb: https://abadxdev.github.io/findercut/", "Cut and paste files in Finder with Cmd+X and Cmd+V.\n\nBy AbadXDev · MIT License\nRequires macOS 13 or later\n\nCode: https://github.com/AbadXDev/findercut\nWeb: https://abadxdev.github.io/findercut/")
+        alert.addButton(withTitle: L("Ver en GitHub", "View on GitHub"))
+        alert.addButton(withTitle: L("Apoyar ❤️", "Support ❤️"))
+        alert.addButton(withTitle: L("Cerrar", "Close"))
         let response = alert.runModal()
         if response == .alertFirstButtonReturn, let url = URL(string: "https://github.com/AbadXDev/findercut") {
             NSWorkspace.shared.open(url)
@@ -395,20 +410,20 @@ enum TipStore {
         let products = (try? await Product.products(for: kTipProductIDs)) ?? []
         let sorted = products.sorted { $0.price < $1.price }
         let alert = NSAlert()
-        alert.messageText = "Apoyar FinderCut ❤️"
+        alert.messageText = L("Apoyar FinderCut ❤️", "Support FinderCut ❤️")
         alert.alertStyle = .informational
         NSApp.activate(ignoringOtherApps: true)
         if sorted.isEmpty {
-            alert.informativeText = "Las opciones de apoyo no están disponibles en este momento. FinderCut sigue siendo gratuito y completo."
-            alert.addButton(withTitle: "Cerrar")
+            alert.informativeText = L("Las opciones de apoyo no están disponibles en este momento. FinderCut sigue siendo gratuito y completo.", "Support options aren't available right now. FinderCut remains free and fully functional.")
+            alert.addButton(withTitle: L("Cerrar", "Close"))
             alert.runModal()
             return
         }
-        alert.informativeText = "FinderCut es gratuito. Si te resulta útil, puedes apoyar su desarrollo con una propina única. No desbloquea nada: es solo una forma de dar las gracias."
+        alert.informativeText = L("FinderCut es gratuito. Si te resulta útil, puedes apoyar su desarrollo con una propina única. No desbloquea nada: es solo una forma de dar las gracias.", "FinderCut is free. If you find it useful, you can support its development with a one-time tip. It unlocks nothing: it's just a way to say thanks.")
         for product in sorted {
-            alert.addButton(withTitle: "Apoyar con \(product.displayPrice)")
+            alert.addButton(withTitle: L("Apoyar con \(product.displayPrice)", "Support with \(product.displayPrice)"))
         }
-        alert.addButton(withTitle: "Cancelar")
+        alert.addButton(withTitle: L("Cancelar", "Cancel"))
         let response = alert.runModal()
         let index = response.rawValue - NSApplication.ModalResponse.alertFirstButtonReturn.rawValue
         guard index >= 0, index < sorted.count else { return }
@@ -424,10 +439,10 @@ enum TipStore {
                 if let transaction = try? verification.payloadValue {
                     await transaction.finish()
                     let thanks = NSAlert()
-                    thanks.messageText = "¡Muchas gracias! ❤️"
-                    thanks.informativeText = "Tu apoyo ayuda a que FinderCut siga siendo gratuito."
+                    thanks.messageText = L("¡Muchas gracias! ❤️", "Thank you so much! ❤️")
+                    thanks.informativeText = L("Tu apoyo ayuda a que FinderCut siga siendo gratuito.", "Your support helps keep FinderCut free.")
                     thanks.alertStyle = .informational
-                    thanks.addButton(withTitle: "Cerrar")
+                    thanks.addButton(withTitle: L("Cerrar", "Close"))
                     NSApp.activate(ignoringOtherApps: true)
                     thanks.runModal()
                 }
