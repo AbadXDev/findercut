@@ -29,6 +29,9 @@ done
 iconutil -c icns AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 rm -rf AppIcon.iconset icon-1024.png
 
+echo "==> Localizations (en, es)…"
+cp -R en.lproj es.lproj "$APP/Contents/Resources/"
+
 cat > "$APP/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -36,6 +39,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <dict>
 	<key>CFBundleName</key>
 	<string>FinderCut</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>FinderCut</string>
 	<key>CFBundleIdentifier</key>
