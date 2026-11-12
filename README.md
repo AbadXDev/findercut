@@ -1,4 +1,8 @@
 <p align="center">
+  🌐 <strong>English</strong> · <a href="README.es.md">Español</a> · <a href="README.zh.md">中文</a>
+</p>
+
+<p align="center">
   <img src="assets/icon.png" width="160" alt="FinderCut icon">
 </p>
 
@@ -83,22 +87,3 @@ cd findercut
 
 - App by **AbadXDev** — MIT License (see `LICENSE`).
 - Not affiliated with Apple. Finder and macOS are trademarks of Apple Inc.
-
----
-
-## En español
-
-**Corta y pega archivos en el Finder con `⌘X` y `⌘V` — gratis y de código abierto.**
-
-El Finder nunca ha tenido un comando Cortar para archivos: en el menú Edición aparece en gris y `⌘X` solo funciona con texto. Las utilidades que lo arreglan son de pago y las más nuevas exigen el último macOS. FinderCut lo resuelve gratis, con código abierto (MIT) y funciona en **macOS 13 o posterior**, en Macs con Apple silicon e Intel.
-
-1. **Selecciona los archivos** y pulsa **`⌘X`**: se copian y queda un corte pendiente, marcado en el icono de las tijeras de la barra de menús.
-2. **Abre la carpeta destino** y pulsa **`⌘V`**: los archivos se mueven ahí, con el «Mover ítem aquí» nativo del Finder.
-
-Nada se mueve hasta que pegas, así que un corte nunca pierde un archivo: `Esc` o un `⌘C` nuevo lo cancelan. Y al renombrar un archivo, `⌘X`/`⌘V` siguen cortando y pegando *texto* como siempre; fuera del Finder, la app no toca nada.
-
-**Descarga:** el ZIP de la última versión en [Releases](https://github.com/AbadXDev/findercut/releases). Muévelo a Aplicaciones, ábrelo la primera vez con clic derecho → **Abrir** y concédele el permiso de **Accesibilidad** cuando macOS lo pida (Ajustes → Privacidad y seguridad → Accesibilidad).
-
-**Compilar:** `./build.sh` con las herramientas de línea de comandos de Xcode. Sin telemetría ni conexión a ningún servidor.
-
-Hecho por **AbadXDev** · Licencia MIT · Sin afiliación con Apple.
