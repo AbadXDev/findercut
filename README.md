@@ -1,50 +1,75 @@
-# FinderCut ✂️
+<p align="center">
+  <img src="assets/icon.png" width="160" alt="FinderCut icon">
+</p>
 
-**Cut and paste files in Finder with `⌘X` and `⌘V` — free and open source.**
+<h1 align="center">FinderCut</h1>
 
-Finder has never had a Cut command for files: the Edit menu shows it greyed
-out, and `⌘X` only works on text. The paid utilities that fix this cost money
-and the newest ones require the latest macOS. FinderCut does the same job for
-free, is fully open source (MIT), and runs on **macOS 13 or later**, on both
-Apple silicon and Intel Macs.
+<p align="center"><strong>By AbadXDev</strong></p>
+
+<p align="center">
+  Cut and paste files in <strong>Finder</strong> with <strong>⌘X</strong> and <strong>⌘V</strong> — free and open source.<br>
+  The Cut command macOS never gave Finder.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-macOS%2013%2B-blue" alt="Platform">
+  <img src="https://img.shields.io/badge/price-Free-brightgreen" alt="Price">
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+  <a href="https://github.com/AbadXDev/findercut/releases/latest"><img src="https://img.shields.io/github/v/release/AbadXDev/findercut" alt="Latest release"></a>
+</p>
+
+## Download
+
+| System | Download | Notes |
+| --- | --- | --- |
+| **macOS** 13+ (Apple silicon & Intel) | [Latest release](https://github.com/AbadXDev/findercut/releases/latest) → `FinderCut-v1.0.0.zip` | Unzip and move `FinderCut.app` to Applications. Ad-hoc signed (not notarized): if macOS blocks it the first time, right-click the app and choose **Open**. Then grant the **Accessibility** permission when macOS asks — FinderCut needs it to watch for ⌘X in Finder. |
+
+No compiling needed — grab the app from the [Releases](https://github.com/AbadXDev/findercut/releases) page and use it.
 
 ## How it works
 
-FinderCut lives in your menu bar and only acts while Finder is in front:
+<p align="center">
+  <img src="assets/how-it-works.png" width="860" alt="Select a file and press Command X, open the destination folder, press Command V and the file moves there">
+</p>
 
-1. Select files in Finder and press **`⌘X`** — FinderCut copies them and
-   remembers a cut is pending.
-2. Open the destination folder and press **`⌘V`** — FinderCut turns that
-   paste into Finder's native **Move Item Here** (`⌥⌘V`).
+1. **Select files** in Finder and press **`⌘X`** — FinderCut copies them and remembers that a cut is pending. The scissors in your menu bar shows the pending cut.
+2. **Open the destination folder** and press **`⌘V`** — FinderCut turns that paste into Finder's native **Move Item Here** (`⌥⌘V`), and the files move there.
+3. **Changed your mind?** Nothing has moved yet — a cut only happens at paste time. Press `Esc`, copy something else with `⌘C`, or simply don't paste.
 
-Nothing is moved until you paste, so a cut can never lose a file: if you
-change your mind, press `Esc`, copy something else, or just don't paste.
+## Keyboard shortcuts
 
-Things it deliberately does **not** break:
+| Keys | What it does |
+| --- | --- |
+| `⌘X` | Cut the selected files (marks them to move) |
+| `⌘V` | Move the cut files into the current folder — or a normal paste if no cut is pending |
+| `⌘C` | Copy as usual (and cancels any pending cut) |
+| `Esc` | Cancel the pending cut |
 
-- **Renaming a file:** while Finder is editing a name, `⌘X` / `⌘V` still cut
-  and paste *text*, exactly as usual.
+## FinderCut vs. the paid alternative
+
+|  | **FinderCut** | Command X |
+| --- | --- | --- |
+| Price | **Free** | $4 |
+| Minimum macOS | **13** | 26 |
+| Source code | **Open source (MIT)** | Closed |
+| Apple silicon & Intel | ✅ Universal | — |
+
+## What it deliberately does not break
+
+- **Renaming a file:** while Finder is editing a name, `⌘X` / `⌘V` still cut and paste *text*, exactly as usual.
 - **Other apps:** outside Finder, FinderCut does nothing at all.
-- **Fresh copies:** pressing `⌘C` cancels a pending cut.
+- **Your files:** nothing is moved, renamed or deleted until you paste.
 
-## Install
+## Requirements
 
-### From a release
+- macOS 13 or later, on Apple silicon or Intel.
+- The **Accessibility** permission (System Settings → Privacy & Security → Accessibility). Until you grant it, the scissors menu shows “missing Accessibility permission”; grant it and FinderCut picks it up with no relaunch.
 
-1. Download `FinderCut-v1.0.0.zip` from the
-   [Releases page](https://github.com/AbadXDev/findercut/releases), unzip it
-   and move `FinderCut.app` to Applications.
-2. Launch it. macOS will ask for **Accessibility** permission — FinderCut
-   needs it to watch for `⌘X` in Finder. Grant it in
-   *System Settings → Privacy & Security → Accessibility*.
-   Until you do, the scissors menu shows “missing Accessibility permission”.
-3. Done. The scissors icon sits in your menu bar; from there you can pause
-   FinderCut, make it start at login, or quit it.
+## Privacy
 
-> The app is ad-hoc signed (not notarized), so on first launch macOS may ask
-> you to right-click the app and choose **Open** once.
+FinderCut collects nothing, phones nowhere, and has no analytics. It only watches key presses while Finder is the frontmost app, and only `⌘X`, `⌘V`, `⌘C` and `Esc`.
 
-### Build it yourself
+## Build from source
 
 Requires Xcode Command Line Tools on macOS 13+:
 
@@ -54,42 +79,26 @@ cd findercut
 ./build.sh        # produces FinderCut.app (universal, ad-hoc signed)
 ```
 
-## Privacy
+## Credits & license
 
-FinderCut collects nothing, phones nowhere, and has no analytics. It only
-watches key presses while Finder is the frontmost app, and only `⌘X`,
-`⌘V`, `⌘C` and `Esc`.
-
-## License
-
-MIT — see [LICENSE](LICENSE). By **AbadXDev**.
+- App by **AbadXDev** — MIT License (see `LICENSE`).
+- Not affiliated with Apple. Finder and macOS are trademarks of Apple Inc.
 
 ---
 
 ## En español
 
-**Corta y pega archivos en el Finder con `⌘X` y `⌘V` — gratis y de código
-abierto.**
+**Corta y pega archivos en el Finder con `⌘X` y `⌘V` — gratis y de código abierto.**
 
-El Finder nunca ha tenido un comando Cortar para archivos: en el menú
-Edición aparece en gris y `⌘X` solo funciona con texto. FinderCut lo
-resuelve gratis, con código abierto (MIT) y funciona en **macOS 13 o
-posterior**, en Macs con Apple silicon e Intel.
+El Finder nunca ha tenido un comando Cortar para archivos: en el menú Edición aparece en gris y `⌘X` solo funciona con texto. Las utilidades que lo arreglan son de pago y las más nuevas exigen el último macOS. FinderCut lo resuelve gratis, con código abierto (MIT) y funciona en **macOS 13 o posterior**, en Macs con Apple silicon e Intel.
 
-- Selecciona archivos y pulsa **`⌘X`**: se copian y queda un corte pendiente.
-- Ve a la carpeta destino y pulsa **`⌘V`**: se mueven ahí, con el «Mover
-  ítem aquí» nativo del Finder.
+1. **Selecciona los archivos** y pulsa **`⌘X`**: se copian y queda un corte pendiente, marcado en el icono de las tijeras de la barra de menús.
+2. **Abre la carpeta destino** y pulsa **`⌘V`**: los archivos se mueven ahí, con el «Mover ítem aquí» nativo del Finder.
 
-Nada se mueve hasta que pegas, así que un corte nunca pierde un archivo.
-Al renombrar un archivo, `⌘X`/`⌘V` siguen cortando y pegando *texto* como
-siempre, y fuera del Finder la app no toca nada.
+Nada se mueve hasta que pegas, así que un corte nunca pierde un archivo: `Esc` o un `⌘C` nuevo lo cancelan. Y al renombrar un archivo, `⌘X`/`⌘V` siguen cortando y pegando *texto* como siempre; fuera del Finder, la app no toca nada.
 
-**Instalación:** descarga el ZIP de
-[Releases](https://github.com/AbadXDev/findercut/releases), mueve
-`FinderCut.app` a Aplicaciones, ábrela y concédele el permiso de
-**Accesibilidad** cuando macOS lo pida (Ajustes → Privacidad y seguridad →
-Accesibilidad). Al ser una app firmada ad hoc, la primera vez quizá tengas
-que abrirla con clic derecho → **Abrir**.
+**Descarga:** el ZIP de la última versión en [Releases](https://github.com/AbadXDev/findercut/releases). Muévelo a Aplicaciones, ábrelo la primera vez con clic derecho → **Abrir** y concédele el permiso de **Accesibilidad** cuando macOS lo pida (Ajustes → Privacidad y seguridad → Accesibilidad).
 
-**Compilar:** `./build.sh` con las herramientas de línea de comandos de
-Xcode. Sin telemetría ni conexión a ningún servidor.
+**Compilar:** `./build.sh` con las herramientas de línea de comandos de Xcode. Sin telemetría ni conexión a ningún servidor.
+
+Hecho por **AbadXDev** · Licencia MIT · Sin afiliación con Apple.
