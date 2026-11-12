@@ -22,6 +22,8 @@
   <a href="https://github.com/AbadXDev/findercut/releases/latest"><img src="https://img.shields.io/github/v/release/AbadXDev/findercut" alt="Versão mais recente"></a>
 </p>
 
+<p align="center">🌐 **Bilingue:** a interface segue automaticamente o idioma do seu Mac — inglês ou espanhol. Também pode escolhê-lo por app em Ajustes do Sistema → Geral → Idioma e Região.</p>
+
 ## Download
 
 | Sistema | Download | Notas |
