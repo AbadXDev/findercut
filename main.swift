@@ -114,6 +114,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(.separator())
 
+        let supportItem = NSMenuItem(title: "Apoyar FinderCut ❤️…", action: #selector(openSupport), keyEquivalent: "")
+        supportItem.target = self
+        menu.addItem(supportItem)
+
+        let aboutItem = NSMenuItem(title: "Acerca de FinderCut", action: #selector(showAbout), keyEquivalent: "")
+        aboutItem.target = self
+        menu.addItem(aboutItem)
+
+        menu.addItem(.separator())
+
         let quitItem = NSMenuItem(title: "Salir de FinderCut", action: #selector(quit), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
@@ -166,6 +176,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSLog("FinderCut: login item toggle failed: \(error)")
         }
         updateMenu()
+    }
+
+    @objc private func openSupport() {
+        if let url = URL(string: "https://github.com/sponsors/AbadXDev") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    @objc private func showAbout() {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+        let alert = NSAlert()
+        alert.messageText = "FinderCut \(version)"
+        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev · Licencia MIT\nRequiere macOS 13 o posterior\n\nCódigo: https://github.com/AbadXDev/findercut\nWeb: https://abadxdev.github.io/findercut/"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Ver en GitHub")
+        alert.addButton(withTitle: "Apoyar ❤️")
+        alert.addButton(withTitle: "Cerrar")
+        NSApp.activate(ignoringOtherApps: true)
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn, let url = URL(string: "https://github.com/AbadXDev/findercut") {
+            NSWorkspace.shared.open(url)
+        } else if response == .alertSecondButtonReturn {
+            openSupport()
+        }
     }
 
     @objc private func quit() {
