@@ -16,12 +16,23 @@ import Cocoa
 import ApplicationServices
 import ServiceManagement
 
+#if APPSTORE
+import StoreKit
+#endif
+
 private let kMagic: Int64 = 0x46435554 // "FCUT" — tags our synthetic events
 private let kKeyX: CGKeyCode = 7
 private let kKeyC: CGKeyCode = 8
 private let kKeyV: CGKeyCode = 9
 private let kKeyEscape: CGKeyCode = 53
 private let kFinderBundleID = "com.apple.finder"
+private let kWebsiteURL = "https://abadxdev.github.io/findercut/"
+private let kPrivacyURL = "https://abadxdev.github.io/findercut/privacy.html"
+#if APPSTORE
+private let kTipProductIDs = ["dev.abadx.findercut.tip3",
+                              "dev.abadx.findercut.tip4",
+                              "dev.abadx.findercut.tip10"]
+#endif
 
 private func eventTapCallback(proxy: CGEventTapProxy,
                               type: CGEventType,
@@ -51,6 +62,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         setupStatusItem()
+#if APPSTORE
+        TipStore.startListening()
+#endif
 
         if !AXIsProcessTrusted() {
             // Ask macOS to show the Accessibility prompt for FinderCut.
@@ -118,6 +132,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         supportItem.target = self
         menu.addItem(supportItem)
 
+#if APPSTORE
+        let privacyItem = NSMenuItem(title: "Política de privacidad…", action: #selector(openPrivacy), keyEquivalent: "")
+        privacyItem.target = self
+        menu.addItem(privacyItem)
+#endif
+
         let aboutItem = NSMenuItem(title: "Acerca de FinderCut", action: #selector(showAbout), keyEquivalent: "")
         aboutItem.target = self
         menu.addItem(aboutItem)
@@ -179,27 +199,48 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openSupport() {
+#if APPSTORE
+        Task { await TipStore.showTips() }
+#else
         if let url = URL(string: "https://github.com/sponsors/AbadXDev") {
             NSWorkspace.shared.open(url)
         }
+#endif
     }
+
+#if APPSTORE
+    @objc private func openPrivacy() {
+        if let url = URL(string: kPrivacyURL) {
+            NSWorkspace.shared.open(url)
+        }
+    }
+#endif
 
     @objc private func showAbout() {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
         let alert = NSAlert()
         alert.messageText = "FinderCut \(version)"
-        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev · Licencia MIT\nRequiere macOS 13 o posterior\n\nCódigo: https://github.com/AbadXDev/findercut\nWeb: https://abadxdev.github.io/findercut/"
         alert.alertStyle = .informational
+        NSApp.activate(ignoringOtherApps: true)
+#if APPSTORE
+        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev · Licencia MIT\nRequiere macOS 13 o posterior\n\nWeb: https://abadxdev.github.io/findercut/"
+        alert.addButton(withTitle: "Sitio web")
+        alert.addButton(withTitle: "Cerrar")
+        if alert.runModal() == .alertFirstButtonReturn, let url = URL(string: kWebsiteURL) {
+            NSWorkspace.shared.open(url)
+        }
+#else
+        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev · Licencia MIT\nRequiere macOS 13 o posterior\n\nCódigo: https://github.com/AbadXDev/findercut\nWeb: https://abadxdev.github.io/findercut/"
         alert.addButton(withTitle: "Ver en GitHub")
         alert.addButton(withTitle: "Apoyar ❤️")
         alert.addButton(withTitle: "Cerrar")
-        NSApp.activate(ignoringOtherApps: true)
         let response = alert.runModal()
         if response == .alertFirstButtonReturn, let url = URL(string: "https://github.com/AbadXDev/findercut") {
             NSWorkspace.shared.open(url)
         } else if response == .alertSecondButtonReturn {
             openSupport()
         }
+#endif
     }
 
     @objc private func quit() {
@@ -329,6 +370,78 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return roleString == (kAXTextFieldRole as String) || roleString == (kAXTextAreaRole as String)
     }
 }
+
+#if APPSTORE
+// MARK: - Support tips (StoreKit) — Mac App Store build only
+//
+// Voluntary one-time tips handled entirely by Apple's in-app purchase.
+// FinderCut is fully free: a tip unlocks nothing and changes nothing.
+enum TipStore {
+    private static var updatesTask: Task<Void, Never>?
+
+    static func startListening() {
+        guard updatesTask == nil else { return }
+        updatesTask = Task {
+            for await result in Transaction.updates {
+                if let transaction = try? result.payloadValue {
+                    await transaction.finish()
+                }
+            }
+        }
+    }
+
+    @MainActor
+    static func showTips() async {
+        let products = (try? await Product.products(for: kTipProductIDs)) ?? []
+        let sorted = products.sorted { $0.price < $1.price }
+        let alert = NSAlert()
+        alert.messageText = "Apoyar FinderCut ❤️"
+        alert.alertStyle = .informational
+        NSApp.activate(ignoringOtherApps: true)
+        if sorted.isEmpty {
+            alert.informativeText = "Las opciones de apoyo no están disponibles en este momento. FinderCut sigue siendo gratuito y completo."
+            alert.addButton(withTitle: "Cerrar")
+            alert.runModal()
+            return
+        }
+        alert.informativeText = "FinderCut es gratuito y de código abierto. Si te resulta útil, puedes apoyar su desarrollo con una propina única. No desbloquea nada: es solo una forma de dar las gracias."
+        for product in sorted {
+            alert.addButton(withTitle: "Apoyar con \(product.displayPrice)")
+        }
+        alert.addButton(withTitle: "Cancelar")
+        let response = alert.runModal()
+        let index = response.rawValue - NSApplication.ModalResponse.alertFirstButtonReturn.rawValue
+        guard index >= 0, index < sorted.count else { return }
+        await purchase(sorted[index])
+    }
+
+    @MainActor
+    private static func purchase(_ product: Product) async {
+        do {
+            let result = try await product.purchase()
+            switch result {
+            case .success(let verification):
+                if let transaction = try? verification.payloadValue {
+                    await transaction.finish()
+                    let thanks = NSAlert()
+                    thanks.messageText = "¡Muchas gracias! ❤️"
+                    thanks.informativeText = "Tu apoyo ayuda a que FinderCut siga siendo gratuito y de código abierto."
+                    thanks.alertStyle = .informational
+                    thanks.addButton(withTitle: "Cerrar")
+                    NSApp.activate(ignoringOtherApps: true)
+                    thanks.runModal()
+                }
+            case .userCancelled, .pending:
+                break
+            @unknown default:
+                break
+            }
+        } catch {
+            NSLog("FinderCut: tip purchase failed: \(error)")
+        }
+    }
+}
+#endif
 
 let delegate = AppDelegate()
 NSApplication.shared.delegate = delegate

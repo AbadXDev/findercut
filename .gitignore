@@ -4,3 +4,7 @@ icon-1024.png
 AppIcon.iconset/
 *.log
 .DS_Store
+
+store/build/
+store/DerivedData/
+xcuserdata/
