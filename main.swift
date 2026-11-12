@@ -223,7 +223,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.alertStyle = .informational
         NSApp.activate(ignoringOtherApps: true)
 #if APPSTORE
-        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev · Licencia MIT\nRequiere macOS 13 o posterior\n\nWeb: https://abadxdev.github.io/findercut/"
+        alert.informativeText = "Corta y pega archivos en Finder con Cmd+X y Cmd+V.\n\nBy AbadXDev\nRequiere macOS 13 o posterior\n\nWeb: https://abadxdev.github.io/findercut/"
         alert.addButton(withTitle: "Sitio web")
         alert.addButton(withTitle: "Cerrar")
         if alert.runModal() == .alertFirstButtonReturn, let url = URL(string: kWebsiteURL) {
@@ -404,7 +404,7 @@ enum TipStore {
             alert.runModal()
             return
         }
-        alert.informativeText = "FinderCut es gratuito y de código abierto. Si te resulta útil, puedes apoyar su desarrollo con una propina única. No desbloquea nada: es solo una forma de dar las gracias."
+        alert.informativeText = "FinderCut es gratuito. Si te resulta útil, puedes apoyar su desarrollo con una propina única. No desbloquea nada: es solo una forma de dar las gracias."
         for product in sorted {
             alert.addButton(withTitle: "Apoyar con \(product.displayPrice)")
         }
@@ -425,7 +425,7 @@ enum TipStore {
                     await transaction.finish()
                     let thanks = NSAlert()
                     thanks.messageText = "¡Muchas gracias! ❤️"
-                    thanks.informativeText = "Tu apoyo ayuda a que FinderCut siga siendo gratuito y de código abierto."
+                    thanks.informativeText = "Tu apoyo ayuda a que FinderCut siga siendo gratuito."
                     thanks.alertStyle = .informational
                     thanks.addButton(withTitle: "Cerrar")
                     NSApp.activate(ignoringOtherApps: true)
