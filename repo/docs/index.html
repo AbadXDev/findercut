@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinderCut — Corta y pega archivos en Finder con ⌘X y ⌘V</title>
+<meta name="description" content="FinderCut: corta y pega archivos en Finder con Cmd+X y Cmd+V, como en Windows. Gratis, de código abierto, para macOS 13 o posterior. By AbadXDev.">
+<link rel="icon" href="https://raw.githubusercontent.com/AbadXDev/findercut/main/assets/icon.png">
+<style>
+  :root{
+    --bg:#f5f5f7; --card:#ffffff; --text:#1d1d1f; --sub:#6e6e73; --line:#e5e5ea;
+    --grad:linear-gradient(135deg,#0a84ff,#bf5af2);
+    --btn:#1d1d1f; --btn-text:#fff;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#000000; --card:#1c1c1e; --text:#f5f5f7; --sub:#a1a1a6; --line:#2c2c2e; --btn:#f5f5f7; --btn-text:#000; }
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+  a{color:#0a84ff;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+  header{padding:64px 0 8px;text-align:center}
+  header img{width:128px;height:128px;border-radius:28px;box-shadow:0 12px 32px rgba(0,0,0,.25)}
+  h1{font-size:52px;letter-spacing:-.02em;margin-top:18px}
+  .tagline{font-size:21px;color:var(--sub);max-width:640px;margin:10px auto 0}
+  .badges{margin:18px 0 26px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badge{font-size:13px;font-weight:600;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+  .buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  .btn{display:inline-block;padding:13px 26px;border-radius:999px;font-size:16px;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--text)}
+  .btn:hover{text-decoration:none;transform:translateY(-1px)}
+  .btn.primary{background:var(--grad);color:#fff;border:none}
+  .btn.dark{background:var(--btn);color:var(--btn-text);border:none}
+  .note{font-size:13px;color:var(--sub);text-align:center;margin-bottom:44px}
+  section{padding:34px 0}
+  h2{font-size:30px;letter-spacing:-.01em;text-align:center;margin-bottom:8px}
+  .sub{text-align:center;color:var(--sub);max-width:620px;margin:0 auto 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .card h3{font-size:17px;margin-bottom:6px}
+  .card p{font-size:15px;color:var(--sub)}
+  .steps-img{display:block;max-width:100%;margin:0 auto;border-radius:18px;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  th,td{padding:12px 16px;text-align:left;font-size:15px;border-bottom:1px solid var(--line)}
+  tr:last-child td{border-bottom:none}
+  kbd{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:2px 7px}
+  .about{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px}
+  .about dl{display:grid;grid-template-columns:160px 1fr;gap:8px 18px;font-size:15px}
+  .about dt{color:var(--sub);font-weight:600}
+  .faq .card{margin-bottom:12px}
+  footer{padding:34px 0 46px;text-align:center;color:var(--sub);font-size:14px;border-top:1px solid var(--line);margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img src="https://raw.githubusercontent.com/AbadXDev/findercut/main/assets/icon.png" alt="Icono de FinderCut">
+    <h1>FinderCut</h1>
+    <p class="tagline">Corta y pega archivos en Finder con <strong>⌘X</strong> y <strong>⌘V</strong>, como en Windows. Sin copiar primero ni recordar atajos raros.</p>
+    <div class="badges">
+      <span class="badge">Versión 1.1.0</span>
+      <span class="badge">macOS 13+</span>
+      <span class="badge">Gratis</span>
+      <span class="badge">Código abierto · MIT</span>
+    </div>
+    <div class="buttons">
+      <a class="btn primary" href="https://github.com/AbadXDev/findercut/releases/latest">⬇️ Descargar</a>
+      <a class="btn dark" href="https://github.com/sponsors/AbadXDev">❤️ Apoyar</a>
+      <a class="btn" href="#acerca">ℹ️ Acerca de</a>
+    </div>
+    <p class="note">App de barra de menús. La primera vez, ábrela con clic derecho → Abrir (firma ad hoc) y concede el permiso de Accesibilidad.</p>
+  </header>
+
+  <section>
+    <h2>Qué hace</h2>
+    <p class="sub">En Finder, el botón Cortar siempre está en gris para archivos. FinderCut lo arregla de la forma más simple: los atajos de toda la vida.</p>
+    <div class="grid">
+      <div class="card"><h3>✂️ Cortar de verdad</h3><p>Pulsa ⌘X sobre un archivo y ⌘V en otra carpeta: el archivo se mueve ahí. Sin pasos intermedios.</p></div>
+      <div class="card"><h3>🛡️ Seguro</h3><p>Nada se toca hasta que pegas. El movimiento lo hace el propio Finder con su «Mover ítem aquí» nativo: si no pegas, todo queda como estaba.</p></div>
+      <div class="card"><h3>✏️ Al renombrar, no molesta</h3><p>Si estás editando el nombre de un archivo, ⌘X y ⌘V siguen cortando y pegando texto como siempre.</p></div>
+      <div class="card"><h3>🪶 Ligero y silencioso</h3><p>Vive en la barra de menús, solo actúa cuando Finder está delante y no recoge ningún dato.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cómo funciona</h2>
+    <p class="sub">Tres pasos, como copiar y pegar de toda la vida.</p>
+    <img class="steps-img" src="https://raw.githubusercontent.com/AbadXDev/findercut/main/assets/how-it-works.png" alt="Cómo funciona FinderCut: ⌘X, abrir destino, ⌘V">
+  </section>
+
+  <section>
+    <h2>Atajos</h2>
+    <div class="wrap" style="padding:0">
+      <table>
+        <tr><th>Atajo</th><th>Qué hace</th></tr>
+        <tr><td><kbd>⌘X</kbd></td><td>Corta los archivos seleccionados en Finder</td></tr>
+        <tr><td><kbd>⌘V</kbd></td><td>Los mueve a la carpeta abierta</td></tr>
+        <tr><td><kbd>⌘C</kbd></td><td>Copia (y cancela cualquier corte pendiente)</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Cancela el corte pendiente</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="acerca">
+    <h2>Acerca de</h2>
+    <p class="sub">La ficha del programa.</p>
+    <div class="about">
+      <dl>
+        <dt>Versión</dt><dd>1.1.0</dd>
+        <dt>Plataforma</dt><dd>macOS 13 o posterior (Apple Silicon e Intel)</dd>
+        <dt>Licencia</dt><dd>MIT — gratis y de código abierto</dd>
+        <dt>Autor</dt><dd>AbadXDev</dd>
+        <dt>Código fuente</dt><dd><a href="https://github.com/AbadXDev/findercut">github.com/AbadXDev/findercut</a></dd>
+        <dt>Descarga</dt><dd><a href="https://github.com/AbadXDev/findercut/releases/latest">Última versión en GitHub Releases</a></dd>
+        <dt>Apoyar</dt><dd><a href="https://github.com/sponsors/AbadXDev">GitHub Sponsors ❤️</a></dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>Preguntas frecuentes</h2>
+    <div class="card"><h3>¿Es seguro?</h3><p>Sí. FinderCut solo observa las teclas cuando Finder está en primer plano y el movimiento lo ejecuta Finder. No recoge datos y el código es abierto: puedes revisarlo entero en GitHub.</p></div>
+    <div class="card"><h3>¿Por qué pide Accesibilidad?</h3><p>Es el permiso que macOS exige para detectar ⌘X/⌘V dentro de Finder. Sin él, ninguna app puede hacer esto.</p></div>
+    <div class="card"><h3>¿En qué se diferencia de Command X?</h3><p>FinderCut es gratis y de código abierto, funciona desde macOS 13 y al renombrar archivos el corte de texto sigue intacto. Command X cuesta $4 y exige macOS 26.</p></div>
+  </section>
+
+  <footer>
+    By AbadXDev · Licencia MIT · <a href="https://github.com/AbadXDev/findercut">GitHub</a> · <a href="https://github.com/sponsors/AbadXDev">Apoyar ❤️</a>
+  </footer>
+
+</div>
+</body>
+</html>
